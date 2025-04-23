@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +23,10 @@ public class QuizService {
     // Get current authenticated user
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null ||
+                !(authentication.getPrincipal() instanceof User)) {
+            throw new RuntimeException("User not authenticated or invalid authentication");
+        }
         return (User) authentication.getPrincipal();
     }
 
@@ -29,6 +34,7 @@ public class QuizService {
     private QuizDTO convertToDTO(Quiz quiz) {
         QuizDTO quizDTO = new QuizDTO();
         quizDTO.setId(quiz.getId());
+        quizDTO.setCode(quiz.getCode());
         quizDTO.setTitle(quiz.getTitle());
         quizDTO.setDescription(quiz.getDescription());
         quizDTO.setMaxMarks(quiz.getMaxMarks());
@@ -72,11 +78,18 @@ public class QuizService {
 
         Quiz quiz = new Quiz();
         quiz.setTitle(quizDTO.getTitle());
+        // Generate a code if one is not provided
+        if (quizDTO.getCode() == null || quizDTO.getCode().trim().isEmpty()) {
+            quiz.setCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        } else {
+            quiz.setCode(quizDTO.getCode());
+        }
         quiz.setDescription(quizDTO.getDescription());
         quiz.setMaxMarks(quizDTO.getMaxMarks());
         quiz.setNumberOfQuestions(quizDTO.getNumberOfQuestions());
         quiz.setActive(quizDTO.isActive());
         quiz.setCreator(currentUser);
+        quiz.setTeacher(currentUser);
 
         Quiz savedQuiz = quizRepository.save(quiz);
         return convertToDTO(savedQuiz);
@@ -90,8 +103,12 @@ public class QuizService {
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with id: " + quizId));
 
         // Check if user is admin or the creator of the quiz
-        if (!currentUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
-                && !quiz.getCreator().equals(currentUser)) {
+        boolean isAdmin = currentUser.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        boolean isOwner = quiz.getCreator().equals(currentUser) || quiz.getTeacher().equals(currentUser);
+
+        if (!isAdmin && !isOwner) {
             throw new RuntimeException("You are not authorized to update this quiz");
         }
 
@@ -100,6 +117,11 @@ public class QuizService {
         quiz.setMaxMarks(quizDTO.getMaxMarks());
         quiz.setNumberOfQuestions(quizDTO.getNumberOfQuestions());
         quiz.setActive(quizDTO.isActive());
+
+        // Update code if provided
+        if (quizDTO.getCode() != null && !quizDTO.getCode().trim().isEmpty()) {
+            quiz.setCode(quizDTO.getCode());
+        }
 
         Quiz updatedQuiz = quizRepository.save(quiz);
         return convertToDTO(updatedQuiz);
@@ -113,9 +135,13 @@ public class QuizService {
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with id: " + quizId));
 
         // Check if user is admin or the creator of the quiz
-        if (!currentUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
-                && !quiz.getCreator().equals(currentUser)) {
-            throw new RuntimeException("You are not authorized to delete this quiz");
+        boolean isAdmin = currentUser.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        boolean isOwner = quiz.getCreator().equals(currentUser) || quiz.getTeacher().equals(currentUser);
+
+        if (!isAdmin && !isOwner) {
+            throw new RuntimeException("You are not authorized to update this quiz");
         }
 
         quizRepository.delete(quiz);
@@ -129,8 +155,12 @@ public class QuizService {
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with id: " + quizId));
 
         // Check if user is admin or the creator of the quiz
-        if (!currentUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
-                && !quiz.getCreator().equals(currentUser)) {
+        boolean isAdmin = currentUser.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        boolean isOwner = quiz.getCreator().equals(currentUser) || quiz.getTeacher().equals(currentUser);
+
+        if (!isAdmin && !isOwner) {
             throw new RuntimeException("You are not authorized to update this quiz");
         }
 

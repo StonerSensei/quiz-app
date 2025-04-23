@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -19,6 +20,8 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String code;
     private String title;
 
     private String description;
@@ -32,8 +35,15 @@ public class Quiz {
     private LocalDateTime createdAt;
 
     @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
+
+    @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
+
+
+
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ques> questions = new ArrayList<>();
@@ -41,5 +51,8 @@ public class Quiz {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+        if (this.code == null || this.code.isEmpty()) {
+            this.code = UUID.randomUUID().toString().substring(0, 8);
+        }
     }
 }

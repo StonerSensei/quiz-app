@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuizDTO {
     private Long id;
+    private String code;
     private String title;
     private String description;
     private int maxMarks;

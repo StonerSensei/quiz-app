@@ -15,6 +15,6 @@ public class QuestionDTO {
     private String option2;
     private String option3;
     private String option4;
-    private String answer; // Only sent for admin/teacher
+    private String answer;
     private Long quizId;
 }

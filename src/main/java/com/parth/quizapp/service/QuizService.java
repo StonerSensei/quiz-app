@@ -6,6 +6,7 @@ import com.parth.quizapp.dto.QuizDTO;
 import com.parth.quizapp.exceptions.ResourceNotFoundException;
 import com.parth.quizapp.repo.quizRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -154,18 +155,21 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with id: " + quizId));
 
-        // Check if user is admin or the creator of the quiz
+        // Check if user is admin or the creator/teacher of the quiz
         boolean isAdmin = currentUser.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        boolean isOwner = quiz.getCreator().equals(currentUser) || quiz.getTeacher().equals(currentUser);
+        boolean isOwner =
+                (quiz.getCreator() != null && quiz.getCreator().getId().equals(currentUser.getId())) ||
+                        (quiz.getTeacher() != null && quiz.getTeacher().getId().equals(currentUser.getId()));
 
         if (!isAdmin && !isOwner) {
-            throw new RuntimeException("You are not authorized to update this quiz");
+            throw new AccessDeniedException("You are not authorized to update this quiz");
         }
 
         quiz.setActive(!quiz.isActive());
         Quiz updatedQuiz = quizRepository.save(quiz);
         return convertToDTO(updatedQuiz);
     }
+
 }

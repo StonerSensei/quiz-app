@@ -49,9 +49,14 @@ public class ResultService {
         dto.setMarksObtained(result.getMarksObtained());
         dto.setCorrectAnswers(result.getCorrectAnswers());
         dto.setAttempted(result.getAttempted());
-        dto.setTotalQuestions(result.getQuiz().getNumberOfQuestions());
+        dto.setTotalQuestions(result.getTotalQuestion());
         dto.setMaxMarks(result.getQuiz().getMaxMarks());
         dto.setAttemptDate(result.getAttemptDate());
+        dto.setStudentId(result.getStudentId());
+        dto.setTeacherId(result.getTeacherId());
+        dto.setStudentName(result.getUser().getUsername());
+        dto.setTotalQuestion(result.getTotalQuestion());
+        dto.setScore(result.getScore());
         return dto;
     }
 
@@ -98,6 +103,14 @@ public class ResultService {
         result.setMarksObtained(marksObtained);
         result.setCorrectAnswers(correctAnswers);
         result.setAttempted(attempted);
+        result.setScore(marksObtained);  // Using marksObtained as score
+        result.setTotalQuestion(quiz.getNumberOfQuestions());
+        result.setStudentId(currentUser.getId());  // Set student ID from current user
+
+        // Check if quiz has creator and set teacher ID
+        if (quiz.getCreator() != null) {
+            result.setTeacherId(quiz.getCreator().getId());
+        }
 
         QuizResult savedResult = resultRepository.save(result);
         return convertToDTO(savedResult);

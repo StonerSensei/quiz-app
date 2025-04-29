@@ -29,6 +29,19 @@ public class QuizResult {
 
     private int correctAnswers;
 
+    @Column(nullable = false)
+    private Integer score;
+
+    @Column(nullable = false)
+    private Integer totalQuestion;
+
+    @Column(nullable = false)
+    private Long studentId;
+
+    private Long teacherId;
+
+    private String studentName;
+
     private int attempted;
 
     private LocalDateTime attemptDate;
@@ -36,5 +49,8 @@ public class QuizResult {
     @PrePersist
     public void prePersist() {
         this.attemptDate = LocalDateTime.now();
+        if (this.user != null) {
+            this.studentName = this.user.getUsername();
+        }
     }
 }

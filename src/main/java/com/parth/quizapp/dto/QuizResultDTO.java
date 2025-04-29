@@ -18,7 +18,12 @@ public class QuizResultDTO {
     private int marksObtained;
     private int correctAnswers;
     private int attempted;
-    private int totalQuestions;
+    private int totalQuestions;  // For backward compatibility
     private int maxMarks;
     private LocalDateTime attemptDate;
+    private Long studentId;
+    private Long teacherId;
+    private String studentName;
+    private Integer totalQuestion;  // Match DB field name
+    private Integer score;
 }

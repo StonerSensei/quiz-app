@@ -1,0 +1,20 @@
+# Node
+node_modules/
+.env
+dist/
+build/
+
+# Java
+*.class
+*.jar
+*.war
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Docker
+*.pid

@@ -1,8 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { RegisterRequest, UserRole } from '../../types/auth';
-import { register } from '../../services/auth';
 import { register as registerUser } from '../../services/auth';
 
 import { useRouter } from 'next/router';

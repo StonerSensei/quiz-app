@@ -85,7 +85,7 @@ public class SecurityConfig {
                 "http://127.0.0.1:3000",
                 "http://localhost:5173",  // Vite default
                 "http://127.0.0.1:5173",
-                "https://your-frontend-app.onrender.com"
+                "https://quiz-app-frontend-amber.vercel.app/auth/login"
         ));
 
         // Allow all necessary methods

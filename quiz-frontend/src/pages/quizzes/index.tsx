@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { getMyQuizzes, getAllQuizzes } from '../../services/quiz';
@@ -10,7 +9,6 @@ import { useAuth } from '../../hooks/useAuth';
 const QuizzesPage = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [filter, setFilter] = useState('my'); // 'my' or 'all'
 
   const isAdmin = user?.role === 'ADMIN';

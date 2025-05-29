@@ -85,7 +85,7 @@ public class SecurityConfig {
                 "http://127.0.0.1:3000",
                 "http://localhost:5173",  // Vite default
                 "http://127.0.0.1:5173",
-                "https://quiz-app-frontend-amber.vercel.app/auth/login"
+                "https://quiz-app-frontend-amber.vercel.app"
         ));
 
         // Allow all necessary methods

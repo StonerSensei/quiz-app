@@ -1,10 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api', // Your Spring Boot backend URL
+  baseURL: 'https://quiz-app-backend-hb5g.onrender.com/api', // Your deployed Spring Boot backend URL
 });
 
-// Add a request interceptor to include the token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   

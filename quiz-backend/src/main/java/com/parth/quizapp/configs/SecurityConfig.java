@@ -84,7 +84,8 @@ public class SecurityConfig {
                 "http://localhost:3000",  // Next.js default
                 "http://127.0.0.1:3000",
                 "http://localhost:5173",  // Vite default
-                "http://127.0.0.1:5173"
+                "http://127.0.0.1:5173",
+                "https://your-frontend-app.onrender.com"
         ));
 
         // Allow all necessary methods

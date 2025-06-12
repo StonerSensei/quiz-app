@@ -6,11 +6,12 @@ import {
 } from '../types/auth';
 
 export const register = async (data: Omit<RegisterRequest, 'id'>): Promise<AuthenticationResponse> => {
-  const response = await api.post<AuthenticationResponse>('/auth/register', data);
+  const response = await api.post<AuthenticationResponse>('/api/auth/register', data);
   return response.data;
 };
+
 export const login = async (data: AuthenticationRequest) => {
-  const response = await api.post<AuthenticationResponse>('/auth/login', data);
+  const response = await api.post<AuthenticationResponse>('/api/auth/login', data);
   return response.data;
 };
 

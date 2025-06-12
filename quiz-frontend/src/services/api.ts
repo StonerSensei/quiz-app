@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://quiz-app-backend-hb5g.onrender.com/api', // Your deployed Spring Boot backend URL
+  baseURL: 'https://quiz-app-backend-nm34.onrender.com', // Your deployed Spring Boot backend URL
 });
 
 api.interceptors.request.use((config) => {
